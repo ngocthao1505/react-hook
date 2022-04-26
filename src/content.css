@@ -1,6 +1,9 @@
 .dataContent{
-    margin: 70px;
+    margin: 30px 70px;
 }
 .Pagination{
-    margin-top: 50px
+    margin-top: 50px;
+}
+.typeMovie{
+    margin-bottom: 30px;
 }
