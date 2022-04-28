@@ -1,12 +1,19 @@
 import { Input } from 'antd';
 const { Search } = Input;
 
-function onSearch(value: any) {
-    if (value && value.trim().length > 0)
-    return value;
+function onSearch(value: any, moviesList: any) {
+    let result = [];
+    if (value && value.trim().length > 0 && moviesList && moviesList.length > 0) {
+        moviesList.map((e) => {
+            if ((e['title'] + '').indexOf(value.trim()) > -1)
+                result.push(e);
+        });
+    }
+    return result;
 }
 
-function CarouselSlide() {
+function CarouselSlide({ moviesList }) {
+
     return (
         <div
             style={{
@@ -23,7 +30,7 @@ function CarouselSlide() {
                     allowClear
                     enterButton="Search"
                     size="large"
-                    onSearch={onSearch}
+                    onSearch={(value) => onSearch(value, moviesList)}
                 />
             </div>
         </div>
