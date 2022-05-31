@@ -1,9 +1,62 @@
-.dataContent{
+.dataContent {
     margin: 30px 70px;
 }
-.Pagination{
+
+.Pagination {
     margin-top: 50px;
 }
-.typeMovie{
+
+.typeMovie {
     margin-bottom: 30px;
+}
+
+.divContent {
+    margin: 50px;
+}
+
+.imgDetail,
+.imgIcon {
+    border-radius: 5px;
+}
+
+.imgIcon {
+    margin-left: 20px
+}
+
+.detailParent h1 {
+    font-weight: bold;
+}
+
+.detailParent h3 {
+    margin-top: 30px;
+    font-size: 15px;
+}
+
+.detailChild {
+    margin-bottom: 20px;
+    font-size: 15px;
+}
+
+.typeFilm {
+    font-size: 15px;
+    margin-top: -10px;
+    margin-bottom: 20px;
+}
+
+.runtime {
+    margin-left: 10px;
+}
+
+.suggestItem {
+    float: right;
+    margin-right: 70px;
+    margin-bottom: 10px;
+}
+
+/* .othersParent{
+    border-bottom: 1px solid black;
+} */
+
+.othersContent {
+    height: 200px;
 }

@@ -1,4 +1,5 @@
 import { Menu } from 'antd';
+import { Link } from "react-router-dom";
 import { MailOutlined, AppstoreOutlined, SettingOutlined } from '@ant-design/icons';
 
 
@@ -6,10 +7,12 @@ function MenuTop() {
     console.log('MenuTop')
     return (
         <Menu mode="horizontal" defaultSelectedKeys={['mail']}>
+            <Link to="/">
             <Menu.Item key="mail" icon={<MailOutlined />}>
-                Navigation One
+                Home Page
             </Menu.Item>
-            <Menu.SubMenu key="SubMenu" title="Navigation Two - Submenu" icon={<SettingOutlined />}>
+            </Link>
+            <Menu.SubMenu key="SubMenu" title="Movies" icon={<SettingOutlined />}>
                 <Menu.Item key="two" icon={<AppstoreOutlined />}>
                     Navigation Two
                 </Menu.Item>
