@@ -77,7 +77,8 @@ function Detail() {
               (suggestMovies as []).map((item: any, index: number) => (
                 item && item["id"] !== id && index < 3 ?
                   <>
-                    <Link to={"/movie/" + item['id']}>
+                    {/* <Link to={"/movie/" + item['id']}> */}
+                    <a href={"/movie/" + item['id']}>
                       <Card
                         key={item['id']}
                         hoverable className="suggestItem"
@@ -86,7 +87,8 @@ function Detail() {
                       >
                         <Meta title={item['title']} />
                       </Card>
-                    </Link>
+                    </a>
+                    {/* </Link> */}
                   </>
 
                   : null

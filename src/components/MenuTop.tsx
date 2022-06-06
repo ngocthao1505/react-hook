@@ -4,7 +4,7 @@ import { MailOutlined, AppstoreOutlined, SettingOutlined } from '@ant-design/ico
 
 
 function MenuTop() {
-    console.log('MenuTop')
+
     return (
         <Menu mode="horizontal" defaultSelectedKeys={['mail']}>
             <Link to="/">

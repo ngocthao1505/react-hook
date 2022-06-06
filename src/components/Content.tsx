@@ -1,5 +1,5 @@
 
-import { Card, Col, Row } from 'antd';
+import { Card, Col, Row, Tooltip, Divider } from 'antd';
 import { Link } from "react-router-dom";
 import { Pagination } from 'antd';
 import '../../src/content.css';
@@ -16,35 +16,75 @@ function genDescription(value: string) {
         return (value + '').slice(0, strLength - 3);
 }
 
-function onChange(value: any) {
-    console.log('onChange', value)
-}
-
 function Content() {
+    const sizePage = 6;
     const [moviesList, setMoviesList] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalMovies, setTotalMovies] = useState(0);
+    const [textSearch, setTextSearch] = useState("");
+
     useEffect(() => {
         fetch(KEYWORD.URL_PATH + '/4/list/1?page=1&api_key=' + KEYWORD.API_KEY)
             .then(response => response.json())
             .then(data => {
-                setMoviesList(data['results']);
+                const movieAll = (data['results'] as []).length;
+                let result = data['results'];
+
+                if (movieAll > sizePage) {
+                    const firstItem = (currentPage - 1) * sizePage;
+                    const lastItem = sizePage * currentPage;
+                    result = (data['results'] as []).filter((e: any, index: number) => { return index >= firstItem && index < lastItem });
+                }
+                setMoviesList(result);
+                setTotalMovies(movieAll);
                 localStorage.setItem("listMovie", JSON.stringify(data['results']));
             });
     }, []);
 
-    const hasData = moviesList && moviesList.length ? true : false;
-    const total = moviesList && moviesList.length ? moviesList.length : 0;
-
-    const onSearch = (value: any,) => {
+    const onSearch = (value: any, changePage?: any) => {
         let result = [];
-        if (value && value.trim().length > 0 && hasData === true) {
-            moviesList.map((e) => {
-                if ((e['title'] + '').toLowerCase().indexOf(value.trim().toLowerCase()) > -1)
-                    result.push(e);
-            });
+        let filterMovie = [];
+        const allMovies = JSON.parse(localStorage.getItem("listMovie")) || [];
+        if (!changePage)
+            setCurrentPage(1);
 
+        if (value && value.trim().length > 0 && allMovies && allMovies.length > 0) {
+            setTextSearch(value.trim());
+            //search for keyword
+            result = allMovies.filter((e: any) => { return (e['title'] + '').toLowerCase().indexOf(value.trim().toLowerCase()) > -1 });
+            if (result.length > sizePage) {
+                //show with pagination
+                const firstItem = (currentPage - 1) * sizePage;
+                const lastItem = sizePage * currentPage;
+                filterMovie = (result as []).filter((e: any, index: number) => { return index >= firstItem && index < lastItem });
+            }
+            else filterMovie = result;
         }
-        setMoviesList(result)
 
+        setMoviesList(filterMovie);
+        setTotalMovies(result.length);
+
+    }
+
+    const onChange = (value: any) => {
+        setCurrentPage(value);
+        // if (textSearch) {
+        //     onSearch(textSearch, value);
+        // }
+        // else
+        {
+            const data = JSON.parse(localStorage.getItem("listMovie")) || [];
+            let result = data;
+
+            if (data && data.length > sizePage) {
+                const firstItem = (value - 1) * sizePage;
+                const lastItem = sizePage * value;
+                result = (data as []).filter((e: any, index: number) => {
+                    return index >= firstItem && index < lastItem
+                });
+            }
+            setMoviesList(result);
+        }
     }
 
     return (
@@ -65,6 +105,7 @@ function Content() {
                         allowClear
                         enterButton="Search"
                         size="large"
+                        defaultValue={textSearch}
                         onSearch={onSearch}
                     />
                 </div>
@@ -73,27 +114,29 @@ function Content() {
                 <div className="site-card-wrapper">
                     <Row gutter={16}> <h1 className='typeMovie'>{moviesList && moviesList['name'] ? moviesList['name'] : ''}</h1> </Row>
                     <Row gutter={16}>
+                        <Divider orientation="right" plain><h3>Có {totalMovies} kết quả tìm kiếm</h3></Divider>
                         {
-                            hasData === true ?
-                                (moviesList as []).map(e => (
-                                    <Col span={4}>
-                                        <Link to={"/movie/" + e['id']}>
-                                            <Card
-                                                key={e['id']}
-                                                hoverable
-                                                style={{ width: 200 }}
-                                                cover={<img alt="example" src={KEYWORD.URL_IMG + e['poster_path']} />}
-                                            >
+                            (moviesList as []).map(e => (
+                                <Col span={4}>
+                                    <Link to={"/movie/" + e['id']}>
+                                        <Card
+                                            key={e['id']}
+                                            hoverable
+                                            style={{ width: 200 }}
+                                            cover={<img alt="example" src={KEYWORD.URL_IMG + e['poster_path']} />}
+                                        >
+                                            <Tooltip placement="bottom" title={e['title']}>
                                                 <Meta title={e['title']} description={genDescription(e['overview'])} />
-                                            </Card>
-                                        </Link>
-                                    </Col>
-                                )
-                                ) : null
+                                            </Tooltip>
+
+                                        </Card>
+                                    </Link>
+                                </Col>
+                            ))
                         }
 
                     </Row>
-                    <Pagination defaultCurrent={1} total={total} pageSize={10} className="Pagination" disabled={hasData === true ? false : true} onChange={onChange} />
+                    <Pagination defaultCurrent={1} total={totalMovies} pageSize={6} className="Pagination" disabled={moviesList && moviesList.length > 0 ? false : true} onChange={onChange} />
                     <div style={{ height: "50px" }}></div>
                 </div>
 
