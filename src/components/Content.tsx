@@ -41,12 +41,11 @@ function Content() {
             });
     }, []);
 
-    const onSearch = (value: any, changePage?: any) => {
+    const onSearch = (value: any) => {
         let result = [];
         let filterMovie = [];
         const allMovies = JSON.parse(localStorage.getItem("listMovie")) || [];
-        if (!changePage)
-            setCurrentPage(1);
+        setCurrentPage(1);
 
         if (value && value.trim().length > 0 && allMovies && allMovies.length > 0) {
             setTextSearch(value.trim());
@@ -67,27 +66,31 @@ function Content() {
     }
 
     const onChange = (value: any) => {
+        let result = [];
+        let filterMovie = [];
+        const allMovies = JSON.parse(localStorage.getItem("listMovie")) || [];
         setCurrentPage(value);
-        // if (textSearch) {
-        //     onSearch(textSearch, value);
-        // }
-        // else
-        {
-            const data = JSON.parse(localStorage.getItem("listMovie")) || [];
-            let result = data;
+        if (allMovies && allMovies.length > 0) {
+            //search for keyword
+            if (textSearch)
+                result = allMovies.filter((e: any) => { return (e['title'] + '').toLowerCase().indexOf(textSearch.trim().toLowerCase()) > -1 });
+            else result = allMovies;
 
-            if (data && data.length > sizePage) {
+            if (result.length > sizePage) {
+                //show with pagination
                 const firstItem = (value - 1) * sizePage;
                 const lastItem = sizePage * value;
-                result = (data as []).filter((e: any, index: number) => {
-                    return index >= firstItem && index < lastItem
-                });
+                filterMovie = (result as []).filter((e: any, index: number) => { return index >= firstItem && index < lastItem });
             }
-            setMoviesList(result);
+            else filterMovie = result;
         }
+
+        setMoviesList(filterMovie);
+        setTotalMovies(result.length);
     }
 
     return (
+
         <>
             {/* <Carousel moviesList={hasData === true ? moviesList['results'] : []} /> */}
             <div
